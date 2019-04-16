@@ -9,7 +9,8 @@ scalaVersion := "2.12.8"
 
 resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
 
-libraryDependencies += "org.vivaconagua" %% "play2-oauth-client" % "0.4.1"
+
+libraryDependencies += "org.vivaconagua" %% "play2-oauth-client" % "0.4.3-play27"
 libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
 
