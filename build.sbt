@@ -10,9 +10,11 @@ scalaVersion := "2.12.8"
 resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
 resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/"
 
-libraryDependencies += "org.vivaconagua" %% "play2-oauth-client" % "0.4.3-play27"
+libraryDependencies += ehcache
 libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
+libraryDependencies += "org.vivaconagua" %% "play2-oauth-client" % "0.4.3-play27"
+libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.8.1"
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "org.vivaconagua.controllers._"
