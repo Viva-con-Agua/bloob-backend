@@ -17,3 +17,7 @@ GET        /authenticate/:provider  controllers.DropsController.authenticate(pro
 POST       /authenticate/:provider  controllers.DropsController.authenticate(provider, route: Option[String], ajax: Option[Boolean])
 # WebApp route
 GET        /identity                controllers.DropsController.frontendLogin
+# db routes
+GET     /db                           controllers.ApplicationController.db
+POST    /add                        controllers.ApplicationController.addUser
+GET     /delete/:id                 controllers.ApplicationController.deleteUser(id : Long)

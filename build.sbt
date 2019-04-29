@@ -11,7 +11,6 @@ resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/service/local/
 resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/"
 
 libraryDependencies += ehcache
-libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
 libraryDependencies += "org.vivaconagua" %% "play2-oauth-client" % "0.4.3-play27"
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.8.1"
@@ -21,3 +20,12 @@ libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.8.1"
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "org.vivaconagua.binders._"
+
+//for db
+libraryDependencies ++= Seq(
+  guice,
+  "com.typesafe.play" %% "play-slick" % "4.0.0",
+  "com.typesafe.play" %% "play-slick-evolutions" % "4.0.0",
+  "com.h2database" % "h2" % "1.4.199",
+  "mysql" % "mysql-connector-java" % "8.0.15",
+)
