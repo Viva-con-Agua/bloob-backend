@@ -26,7 +26,7 @@ class ApplicationController @Inject()(cc: ControllerComponents, userService: Use
         Future.successful(Ok(views.html.db(errorForm, Seq.empty[User])))
       },
       data => {
-        val newUser = User(0, data.firstName, data.lastName, data.mobile, data.email)
+        val newUser = User(0, data.roleName, data.crewName, data.email)
         userService.addUser(newUser).map( _ => Redirect(routes.ApplicationController.db()))
       })
   }

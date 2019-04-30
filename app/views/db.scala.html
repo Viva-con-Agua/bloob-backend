@@ -12,21 +12,21 @@
         <table align="center" cellspacing="20">
           <tr>
             <td align="left">
-              <div class="user-form" id="firstName_field_label">
+              <div class="user-form" id="roleName_field_label">
                 <div class="controls col-xs-offset-3 col-xs-9">
                   <div class="input-group">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-                    <strong>firstname</strong> :
+                    <strong>roleName</strong> :
                   </div>
                 </div>
               </div>
             </td>
             <td align="center">
-              <div class="user-form" id="firstName_field_value">
+              <div class="user-form" id="roleName_field_value">
                 <div class="controls col-xs-offset-3 col-xs-9">
                   <div class="input-group">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-                    <input type="text" id="firstName" name="firstName" value="" placeholder="First Name" class="form-control input-lg" required>
+                    <input type="text" id="roleName" name="roleName" value="" placeholder="Role Name" class="form-control input-lg" required>
                   </div>
                 </div>
               </div>
@@ -34,43 +34,21 @@
           </tr>
           <tr>
             <td align="left">
-              <div class="user-form" id="lastName_field_label">
+              <div class="user-form" id="crewName_field_label">
                 <div class="controls col-xs-offset-3 col-xs-9">
                   <div class="input-group">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-                    <strong>lastname</strong> :
+                    <strong>crewName</strong> :
                   </div>
                 </div>
               </div>
             </td>
             <td align="center">
-              <div class="user-form" id="lastName_field_value">
+              <div class="user-form" id="crewName_field_value">
                 <div class="controls col-xs-offset-3 col-xs-9">
                   <div class="input-group">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-                    <input type="text" id="lastName" name="lastName" value="" placeholder="Last Name" class="form-control input-lg" required>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td align="left">
-              <div class="user-form" id="mobile_field_label">
-                <div class="controls col-xs-offset-3 col-xs-9">
-                  <div class="input-group">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-                    <strong>mobile</strong> :
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td align="center">
-              <div class="user-form" id="mobile_field_value">
-                <div class="controls col-xs-offset-3 col-xs-9">
-                  <div class="input-group">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-                    <input type="tel" id="mobile" name="mobile" placeholder="Mobile" class="form-control input-lg" required>
+                    <input type="text" id="crewName" name="crewName" value="" placeholder="Crew Name" class="form-control input-lg" >
                   </div>
                 </div>
               </div>
@@ -113,17 +91,15 @@
         <table cellspacing="20">
           <tr>
             <th>userid</th>
-            <th>firstname</th>
-            <th>lastname</th>
-            <th>mobile</th>
+            <th>roleName</th>
+            <th>crewName</th>
             <th>email</th>
           </tr>
           @for(user <- users){
             <tr>
               <td>@user.id</td>
-              <td>@user.firstName</td>
-              <td>@user.lastName</td>
-              <td>@user.mobile</td>
+              <td>@user.roleName</td>
+              <td>@user.crewName</td>
               <td>@user.email</td>
               <td><a href="@routes.ApplicationController.deleteUser(user.id)">delete</a></td>
             </tr>

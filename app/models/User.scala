@@ -9,17 +9,16 @@ import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class User(id: Long, firstName: String, lastName: String, mobile: Long, email: String)
+case class User(id: Long, roleName: String, crewName: String, email: String)
 
-case class UserFormData(firstName: String, lastName: String, mobile: Long, email: String)
+case class UserFormData(roleName: String, crewName: String, email: String)
 
 object UserForm {
 
   val form = Form(
     mapping(
-      "firstName" -> nonEmptyText,
-      "lastName" -> nonEmptyText,
-      "mobile" -> longNumber,
+      "roleName" -> nonEmptyText,
+      "crewName" -> text,
       "email" -> email
     )(UserFormData.apply)(UserFormData.unapply)
   )
@@ -30,13 +29,12 @@ import slick.jdbc.MySQLProfile.api._
 class UserTableDef(tag: Tag) extends Table[User](tag, "user") {
 
   def id = column[Long]("id", O.PrimaryKey,O.AutoInc)
-  def firstName = column[String]("first_name")
-  def lastName = column[String]("last_name")
-  def mobile = column[Long]("mobile")
+  def roleName = column[String]("role_name")
+  def crewName = column[String]("crew_name")
   def email = column[String]("email")
 
   override def * =
-    (id, firstName, lastName, mobile, email) <>(User.tupled, User.unapply)
+    (id, roleName, crewName, email) <>(User.tupled, User.unapply)
 }
 
 class Users @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {

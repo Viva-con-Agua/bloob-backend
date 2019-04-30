@@ -4,11 +4,7 @@
 
 create table `user` (
   `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `first_name` TEXT NOT NULL,
-  `last_name` TEXT NOT NULL,
-  `mobile` BIGINT NOT NULL,
+  `role_name` TEXT NOT NULL,
+  `crew_name` TEXT,
   `email` TEXT NOT NULL
 )
-
--- !Downs
-drop table `user`
