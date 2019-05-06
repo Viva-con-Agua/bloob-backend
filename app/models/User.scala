@@ -23,7 +23,7 @@ object UserForm {
     )(UserFormData.apply)(UserFormData.unapply)
   )
 }
-
+//ab hier bis ende in extra DAO package auslagern
 import slick.jdbc.MySQLProfile.api._
 
 class UserTableDef(tag: Tag) extends Table[User](tag, "user") {
@@ -59,4 +59,11 @@ class Users @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(i
    dbConfig.db.run(users.result)
   }
 
-}
+/*  def getByRole(role: String, crew: Option[String]): Future[Set[User]] = {
+    dbConfig.db.run(users.filter(entry => entry.roleName === role && (crew.isEmpty || entry.crewName === crew.get)).result.toSet)
+  }*/
+  def getByRole(role: String): Future[Seq[User]] = {
+    dbConfig.db.run(users.filter(entry => entry.roleName === role).result)
+  }
+  
+  }

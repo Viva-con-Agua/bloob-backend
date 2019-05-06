@@ -108,4 +108,34 @@
       </fieldset>
     </div>
 
+    <div class="mail-search" >
+      <fieldset>
+        <legend align="center"><h3>Mails of Role</h3></legend>
+        <div class="user-form" id="roleName_field_value">
+            <div class="controls col-xs-offset-3 col-xs-9">
+              <div class="input-group">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                <input type="text" id="roleName" name="roleName" value="" placeholder="Role Name" class="form-control input-lg" required>
+              </div>
+            </div>
+          </div>
+        <table cellspacing="20">
+          <tr>
+            <th>userid</th>
+            <th>roleName</th>
+            <th>crewName</th>
+            <th>email</th>
+          </tr>
+          @for(user <- users){
+            <tr>
+              <td>@user.id</td>
+              <td>@user.roleName</td>
+              <td>@user.crewName</td>
+              <td>@user.email</td>
+            </tr>
+          }
+        </table>
+      </fieldset>
+    </div>
+
   }

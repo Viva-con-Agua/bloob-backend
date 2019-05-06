@@ -19,7 +19,10 @@ class UserService @Inject() (users: Users) {
     users.get(id)
   }
 
-  def listAllUsers: Future[Seq[User]] = {
+  def listAllUsers(): Future[Seq[User]] = {
     users.listAll
+  }
+  def getByRole(roleName: String): Future[Seq[User]] = {
+    users.getByRole(roleName)
   }
 }

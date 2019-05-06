@@ -21,3 +21,6 @@ GET        /identity                controllers.DropsController.frontendLogin
 GET     /db                           controllers.ApplicationController.db
 POST    /add                        controllers.ApplicationController.addUser
 GET     /delete/:id                 controllers.ApplicationController.deleteUser(id : Long)
+GET     /mail/:role                 controllers.ApplicationController.getByRole(role : String)
+GET     /add/frontend/:role/:crew/:email    controllers.ApplicationController.addUserFrontend(role : String, crew : String, email : String)
+GET     /all                        controllers.ApplicationController.listAllUsers
