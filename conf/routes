@@ -24,3 +24,4 @@ GET     /delete/:id                 controllers.ApplicationController.deleteUser
 GET     /mail/:role                 controllers.ApplicationController.getByRole(role : String)
 GET     /add/frontend/:role/:crew/:email    controllers.ApplicationController.addUserFrontend(role : String, crew : String, email : String)
 GET     /all                        controllers.ApplicationController.listAllUsers
+POST    /create                     controllers.ApplicationController.create
