@@ -10,28 +10,28 @@ import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class User(id: Long, roleName: String, crewName: String, email: String)
+case class EmailAR(id: Long, roleName: String, crewName: String, email: String)
 
-object User {
-  implicit val userFormat = Json.format[User]
+object EmailAR {
+  implicit val emailARFormat = Json.format[EmailAR]
 }
 
-case class UserFormData(roleName: String, crewName: String, email: String)
+case class EmailARFormData(roleName: String, crewName: String, email: String)
 
-object UserForm {
+object EmailARForm {
 
   val form = Form(
     mapping(
       "roleName" -> nonEmptyText,
       "crewName" -> text,
       "email" -> email
-    )(UserFormData.apply)(UserFormData.unapply)
+    )(EmailARFormData.apply)(EmailARFormData.unapply)
   )
 }
 //ab hier bis ende in extra DAO package auslagern
 import slick.jdbc.MySQLProfile.api._
 
-class UserTableDef(tag: Tag) extends Table[User](tag, "user") {
+class EmailARTableDef(tag: Tag) extends Table[EmailAR](tag, "emailAR") {
 
   def id = column[Long]("id", O.PrimaryKey,O.AutoInc)
   def roleName = column[String]("role_name")
@@ -39,37 +39,37 @@ class UserTableDef(tag: Tag) extends Table[User](tag, "user") {
   def email = column[String]("email")
 
   override def * =
-    (id, roleName, crewName, email) <>((User.apply _).tupled, User.unapply)
+    (id, roleName, crewName, email) <>((EmailAR.apply _).tupled, EmailAR.unapply)
 }
 
 /**
  * Database-Access-Object (DAO)
  **/
-class Users @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
+class EmailARs @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
 
-  val users = TableQuery[UserTableDef]
+  val emailARs = TableQuery[EmailARTableDef]
 
-  def add(user: User): Future[Option[User]] = {
-    dbConfig.db.run(users += user).flatMap(id => get(id))
+  def add(emailAR: EmailAR): Future[Option[EmailAR]] = {
+    dbConfig.db.run(emailARs += emailAR).flatMap(id => get(id))
   }
 
   def delete(id: Long): Future[Int] = {
-    dbConfig.db.run(users.filter(_.id === id).delete)
+    dbConfig.db.run(emailARs.filter(_.id === id).delete)
   }
 
-  def get(id: Long): Future[Option[User]] = {
-    dbConfig.db.run(users.filter(_.id === id).result.headOption)
+  def get(id: Long): Future[Option[EmailAR]] = {
+    dbConfig.db.run(emailARs.filter(_.id === id).result.headOption)
   }
 
-  def listAll: Future[Seq[User]] = {
-   dbConfig.db.run(users.result)
+  def listAll: Future[Seq[EmailAR]] = {
+   dbConfig.db.run(emailARs.result)
   }
 
-/*  def getByRole(role: String, crew: Option[String]): Future[Set[User]] = {
-    dbConfig.db.run(users.filter(entry => entry.roleName === role && (crew.isEmpty || entry.crewName === crew.get)).result.toSet)
+/*  def getByRole(role: String, crew: Option[String]): Future[Set[EmailAR]] = {
+    dbConfig.db.run(emailARs.filter(entry => entry.roleName === role && (crew.isEmpty || entry.crewName === crew.get)).result.toSet)
   }*/
-  def getByRole(role: String): Future[Seq[User]] = {
-    dbConfig.db.run(users.filter(entry => entry.roleName === role).result)
+  def getByRole(role: String): Future[Seq[EmailAR]] = {
+    dbConfig.db.run(emailARs.filter(entry => entry.roleName === role).result)
   }
   
   }

@@ -1,28 +1,28 @@
 package services
 
 import com.google.inject.Inject
-import models.{User, Users}
+import models.{EmailAR, EmailARs}
 
 import scala.concurrent.Future
 
-class UserService @Inject() (users: Users) {
+class EmailARService @Inject() (emailARs: EmailARs) {
 
-  def addUser(user: User): Future[Option[User]] = {
-    users.add(user)
+  def addEmailAR(emailAR: EmailAR): Future[Option[EmailAR]] = {
+    emailARs.add(emailAR)
   }
 
-  def deleteUser(id: Long): Future[Int] = {
-    users.delete(id)
+  def deleteEmailAR(id: Long): Future[Int] = {
+    emailARs.delete(id)
   }
 
-  def getUser(id: Long): Future[Option[User]] = {
-    users.get(id)
+  def getEmailAR(id: Long): Future[Option[EmailAR]] = {
+    emailARs.get(id)
   }
 
-  def listAllUsers(): Future[Seq[User]] = {
-    users.listAll
+  def listAllEmailARs(): Future[Seq[EmailAR]] = {
+    emailARs.listAll
   }
-  def getByRole(roleName: String): Future[Seq[User]] = {
-    users.getByRole(roleName)
+  def getByRole(roleName: String): Future[Seq[EmailAR]] = {
+    emailARs.getByRole(roleName)
   }
 }

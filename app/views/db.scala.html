@@ -1,31 +1,31 @@
-@(userForm: Form[models.UserFormData],users : Seq[models.User])(implicit request: RequestHeader)
+@(emailARForm: Form[models.EmailARFormData],emailARs : Seq[models.EmailAR])(implicit request: RequestHeader)
   @main("Play 2.7 + Slick 4.0.0 example") {
 
-    <form id="user-data-form" role="form" action='@routes.ApplicationController.addUser()' method="post" class="form-horizontal" align="center" autocomplete="off">
+    <form id="emailAR-data-form" role="form" action='@routes.ApplicationController.addEmailAR()' method="post" class="form-horizontal" align="center" autocomplete="off">
 
-      <fieldset class="user-fieldset">
+      <fieldset class="emailAR-fieldset">
 
-        <div class="user-form">
+        <div class="emailAR-form">
           <label class="form-title" style="color: #F8741B; font-size: 22px;font-weight: bold; text-decoration:none">title</label>
         </div>
         <br/>
         <table align="center" cellspacing="20">
           <tr>
             <td align="left">
-              <div class="user-form" id="roleName_field_label">
+              <div class="emailAR-form" id="roleName_field_label">
                 <div class="controls col-xs-offset-3 col-xs-9">
                   <div class="input-group">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-emailAR"></span></span>
                     <strong>roleName</strong> :
                   </div>
                 </div>
               </div>
             </td>
             <td align="center">
-              <div class="user-form" id="roleName_field_value">
+              <div class="emailAR-form" id="roleName_field_value">
                 <div class="controls col-xs-offset-3 col-xs-9">
                   <div class="input-group">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-emailAR"></span></span>
                     <input type="text" id="roleName" name="roleName" value="" placeholder="Role Name" class="form-control input-lg" required>
                   </div>
                 </div>
@@ -34,20 +34,20 @@
           </tr>
           <tr>
             <td align="left">
-              <div class="user-form" id="crewName_field_label">
+              <div class="emailAR-form" id="crewName_field_label">
                 <div class="controls col-xs-offset-3 col-xs-9">
                   <div class="input-group">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-emailAR"></span></span>
                     <strong>crewName</strong> :
                   </div>
                 </div>
               </div>
             </td>
             <td align="center">
-              <div class="user-form" id="crewName_field_value">
+              <div class="emailAR-form" id="crewName_field_value">
                 <div class="controls col-xs-offset-3 col-xs-9">
                   <div class="input-group">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-emailAR"></span></span>
                     <input type="text" id="crewName" name="crewName" value="" placeholder="Crew Name" class="form-control input-lg" >
                   </div>
                 </div>
@@ -56,20 +56,20 @@
           </tr>
           <tr>
             <td align="left">
-              <div class="user-form" id="email_field_label">
+              <div class="emailAR-form" id="email_field_label">
                 <div class="controls col-xs-offset-3 col-xs-9">
                   <div class="input-group">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-emailAR"></span></span>
                     <strong>email</strong> :
                   </div>
                 </div>
               </div>
             </td>
             <td align="center">
-              <div class="user-form" id="email_field_value">
+              <div class="emailAR-form" id="email_field_value">
                 <div class="controls col-xs-offset-3 col-xs-9">
                   <div class="input-group">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-emailAR"></span></span>
                     <input type="email" id="email" name="email" placeholder="Email" class="form-control input-lg" required>
                   </div>
                 </div>
@@ -85,23 +85,23 @@
       </fieldset>
     </form>
 
-    <div class="user-display" >
+    <div class="emailAR-display" >
       <fieldset>
-        <legend align="center"><h3>Registered Users</h3></legend>
+        <legend align="center"><h3>Registered EmailARs</h3></legend>
         <table cellspacing="20">
           <tr>
-            <th>userid</th>
+            <th>emailARid</th>
             <th>roleName</th>
             <th>crewName</th>
             <th>email</th>
           </tr>
-          @for(user <- users){
+          @for(emailAR <- emailARs){
             <tr>
-              <td>@user.id</td>
-              <td>@user.roleName</td>
-              <td>@user.crewName</td>
-              <td>@user.email</td>
-              <td><a href="@routes.ApplicationController.deleteUser(user.id)">delete</a></td>
+              <td>@emailAR.id</td>
+              <td>@emailAR.roleName</td>
+              <td>@emailAR.crewName</td>
+              <td>@emailAR.email</td>
+              <td><a href="@routes.ApplicationController.deleteEmailAR(emailAR.id)">delete</a></td>
             </tr>
           }
         </table>
@@ -111,27 +111,27 @@
     <div class="mail-search" >
       <fieldset>
         <legend align="center"><h3>Mails of Role</h3></legend>
-        <div class="user-form" id="roleName_field_value">
+        <div class="emailAR-form" id="roleName_field_value">
             <div class="controls col-xs-offset-3 col-xs-9">
               <div class="input-group">
-                <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-emailAR"></span></span>
                 <input type="text" id="roleName" name="roleName" value="" placeholder="Role Name" class="form-control input-lg" required>
               </div>
             </div>
           </div>
         <table cellspacing="20">
           <tr>
-            <th>userid</th>
+            <th>emailARid</th>
             <th>roleName</th>
             <th>crewName</th>
             <th>email</th>
           </tr>
-          @for(user <- users){
+          @for(emailAR <- emailARs){
             <tr>
-              <td>@user.id</td>
-              <td>@user.roleName</td>
-              <td>@user.crewName</td>
-              <td>@user.email</td>
+              <td>@emailAR.id</td>
+              <td>@emailAR.roleName</td>
+              <td>@emailAR.crewName</td>
+              <td>@emailAR.email</td>
             </tr>
           }
         </table>
