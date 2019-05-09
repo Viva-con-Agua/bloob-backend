@@ -68,7 +68,8 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
     emailARService.addEmailAR(newEmailAR).map( _ => Redirect(routes.ApplicationController.db()))
   }
   def listAllEmailARs() = Action.async {implicit request: Request[AnyContent] =>
-  emailARService.listAllEmailARs() map { res =>
-    Redirect(routes.ApplicationController.db())}
+    emailARService.listAllEmailARs map { emailARs =>
+      Ok(Json.toJson(emailARs))
+    }
   }
 }
