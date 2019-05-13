@@ -41,15 +41,15 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
     }
   }
   def getByRole(roleName: String) = Action.async { implicit request =>
-    println(request)
-    println(request.body)
+    //println(request)
+    //println(request.body)
     emailARService.getByRole(roleName) map { emails =>
       Ok(Json.toJson(emails))
     }
   }
   def getByRole2 = Action(parse.json).async { implicit request =>
-    println(request)
-    println(request.body)
+    //println(request)
+    //println(request.body)
     implicit val ec = ExecutionContext.global
     request.body.validate[EmailARRequest].fold(
       errors => Future.successful(BadRequest(JsError.toJson(errors))),
@@ -63,8 +63,8 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
   }
 
   def create = Action(parse.json).async { implicit request =>
-    println(request)
-    println(request.body)
+    //println(request)
+    //println(request.body)
     implicit val ec = ExecutionContext.global
     request.body.validate[EmailAR].fold(
       errors => Future.successful(BadRequest(JsError.toJson(errors))),
