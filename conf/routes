@@ -25,3 +25,5 @@ GET     /mail/:role                 controllers.ApplicationController.getByRole(
 GET     /add/frontend/:role/:crew/:email    controllers.ApplicationController.addEmailARFrontend(role : String, crew : String, email : String)
 GET     /all                        controllers.ApplicationController.listAllEmailARs
 POST    /create                     controllers.ApplicationController.create
+GET     /get/:role                  controllers.ApplicationController.getByRole(role : String)
+POST    /get                        controllers.ApplicationController.getByRole2

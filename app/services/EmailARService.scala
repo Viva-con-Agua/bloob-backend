@@ -1,7 +1,7 @@
 package services
 
 import com.google.inject.Inject
-import models.{EmailAR, EmailARs}
+import models.{EmailAR, EmailARs, EmailARRequest}
 
 import scala.concurrent.Future
 
@@ -22,7 +22,10 @@ class EmailARService @Inject() (emailARs: EmailARs) {
   def listAllEmailARs(): Future[Seq[EmailAR]] = {
     emailARs.listAll
   }
-  def getByRole(roleName: String): Future[Seq[EmailAR]] = {
+  def getByRole(roleName: String): Future[Seq[String]] = {
     emailARs.getByRole(roleName)
+  }
+  def getByRequest(request: EmailARRequest): Future[Seq[String]] = {
+    emailARs.getByRequest(request)
   }
 }

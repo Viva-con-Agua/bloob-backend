@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject._
-import models.{EmailAR, EmailARForm}
+import models.{EmailAR, EmailARForm, EmailARRequest}
 import play.api.Logging
 import play.api.mvc._
 import play.api.libs.json.{JsError, JsValue, Json}
@@ -40,10 +40,26 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
       Redirect(routes.ApplicationController.db())
     }
   }
-  def getByRole(roleName: String) = Action.async { implicit request: Request[AnyContent] =>
-    emailARService.getByRole(roleName) map { res =>
-      Redirect(routes.ApplicationController.db())
+  def getByRole(roleName: String) = Action.async { implicit request =>
+    println(request)
+    println(request.body)
+    emailARService.getByRole(roleName) map { emails =>
+      Ok(Json.toJson(emails))
     }
+  }
+  def getByRole2 = Action(parse.json).async { implicit request =>
+    println(request)
+    println(request.body)
+    implicit val ec = ExecutionContext.global
+    request.body.validate[EmailARRequest].fold(
+      errors => Future.successful(BadRequest(JsError.toJson(errors))),
+      emailARRequest => {
+        emailARService.getByRequest(emailARRequest) map { emails =>
+        println("sending response: "+emails)
+        Ok(Json.toJson(emails))
+        }
+      }
+    )
   }
 
   def create = Action(parse.json).async { implicit request =>
