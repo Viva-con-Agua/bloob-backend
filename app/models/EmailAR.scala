@@ -37,6 +37,13 @@ object EmailARRequest {
   implicit val emailARRequestFormat = Json.format[EmailARRequest]
 }
 
+case class EmailARDeleteRequest(
+  id: Long
+)
+object EmailARDeleteRequest {
+  implicit val emailARDeleteRequest = Json.format[EmailARDeleteRequest]
+}
+
 //ab hier bis ende in extra DAO package auslagern
 import slick.jdbc.MySQLProfile.api._
 
