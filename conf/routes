@@ -18,13 +18,7 @@ POST       /authenticate/:provider  controllers.DropsController.authenticate(pro
 # WebApp route
 GET        /identity                controllers.DropsController.frontendLogin
 # db routes
-GET     /db                           controllers.ApplicationController.db
-POST    /add                        controllers.ApplicationController.addEmailAR
-GET     /delete/:id                 controllers.ApplicationController.deleteEmailAR(id : Long)
-GET     /mail/:role                 controllers.ApplicationController.getByRole(role : String)
-GET     /add/frontend/:role/:crew/:email    controllers.ApplicationController.addEmailARFrontend(role : String, crew : String, email : String)
 GET     /all                        controllers.ApplicationController.listAllEmailARs
 POST    /create                     controllers.ApplicationController.create
-GET     /get/:role                  controllers.ApplicationController.getByRole(role : String)
 POST    /get                        controllers.ApplicationController.getByRole2
 POST    /delete                     controllers.ApplicationController.deleteEmailAR2

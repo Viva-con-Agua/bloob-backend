@@ -16,19 +16,6 @@ object EmailAR {
   implicit val emailARFormat = Json.format[EmailAR]
 }
 
-case class EmailARFormData(roleName: String, crewName: String, email: String)
-
-object EmailARForm {
-
-  val form = Form(
-    mapping(
-      "roleName" -> nonEmptyText,
-      "crewName" -> text,
-      "email" -> email
-    )(EmailARFormData.apply)(EmailARFormData.unapply)
-  )
-}
-
 case class EmailARRequest(
     roleName: Array[String],
     crewName: String
@@ -81,9 +68,6 @@ class EmailARs @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
    dbConfig.db.run(emailARs.result)
   }
 
-  def getByRole(role: String): Future[Seq[String]] = {
-    dbConfig.db.run(emailARs.filter(entry => entry.roleName === role).map(_.email).result)
-  }
   def getByRequest(request: EmailARRequest): Future[Seq[String]] = {
     var q = emailARs.filter(entry => entry.roleName === request.roleName(0) && (entry.crewName === request.crewName || entry.crewName === "")).map(_.email)
     //var i = 0
