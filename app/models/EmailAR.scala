@@ -10,7 +10,7 @@ import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class EmailAR(id: Long, roleName: String, crewName: String, email: String)
+case class EmailAR(id: Long, roleName: String, pillar: String, crewName: String, email: String)
 
 object EmailAR {
   implicit val emailARFormat = Json.format[EmailAR]
@@ -18,6 +18,7 @@ object EmailAR {
 
 case class EmailARRequest(
     roleName: Array[String],
+    pillar: String,
     crewName: String
     )
 object EmailARRequest {
@@ -38,11 +39,12 @@ class EmailARTableDef(tag: Tag) extends Table[EmailAR](tag, "emailAR") {
 
   def id = column[Long]("id", O.PrimaryKey,O.AutoInc)
   def roleName = column[String]("role_name")
+  def pillar = column[String]("pillar")
   def crewName = column[String]("crew_name")
   def email = column[String]("email")
 
   override def * =
-    (id, roleName, crewName, email) <>((EmailAR.apply _).tupled, EmailAR.unapply)
+    (id, roleName, pillar, crewName, email) <>((EmailAR.apply _).tupled, EmailAR.unapply)
 }
 
 /**
@@ -69,11 +71,19 @@ class EmailARs @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
   }
 
   def getByRequest(request: EmailARRequest): Future[Seq[String]] = {
-    var q = emailARs.filter(entry => entry.roleName === request.roleName(0) && (entry.crewName === request.crewName || entry.crewName === "")).map(_.email)
-    //var i = 0
+    var q = emailARs.filter(entry => 
+      entry.roleName === request.roleName(0) 
+      && (entry.crewName === request.crewName || entry.crewName === "")
+      && (entry.pillar === request.pillar || entry.pillar === "")
+    ).map(_.email)
+    
     for(n <- request.roleName){
-      q = (q union emailARs.filter(entry => entry.roleName === n && (entry.crewName === request.crewName || entry.crewName === "")).map(_.email))
-      //println("looking for: "+n)
+      q = (q union emailARs.filter(entry => 
+        entry.roleName === n 
+        && (entry.crewName === request.crewName || entry.crewName === "")
+        && (entry.pillar === request.pillar || entry.pillar === "")
+      ).map(_.email))
+
     }
     dbConfig.db.run(q.result)
   }
