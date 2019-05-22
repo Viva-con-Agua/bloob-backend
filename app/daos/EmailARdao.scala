@@ -11,7 +11,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import models.{EmailAR, EmailARRequest}
 
-//ab hier bis ende in extra DAO package auslagern
 import slick.jdbc.MySQLProfile.api._
 
 class EmailARTableDef(tag: Tag) extends Table[EmailAR](tag, "emailAR") {
@@ -29,7 +28,7 @@ class EmailARTableDef(tag: Tag) extends Table[EmailAR](tag, "emailAR") {
 /**
  * Database-Access-Object (DAO)
  **/
-class EmailARs @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
+class EmailARdao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
 
   val emailARs = TableQuery[EmailARTableDef]
 
