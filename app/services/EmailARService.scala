@@ -1,7 +1,8 @@
 package services
 
 import com.google.inject.Inject
-import models.{EmailAR, EmailARs, EmailARRequest}
+import models.{EmailAR, EmailARRequest}
+import daos.EmailARs
 
 import scala.concurrent.Future
 
