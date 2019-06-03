@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject._
-import models.{EmailAR, EmailARRequest, EmailARDeleteRequest}
+import models.{EmailAR, EmailARRequest, EmailARDeleteRequest, Email}
 import play.api.Logging
 import play.api.mvc._
 import play.api.libs.json.{JsError, JsValue, Json}
@@ -31,8 +31,8 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
   }
 
   def getByRole2 = Action(parse.json).async { implicit request =>
-    //println(request)
-    //println(request.body)
+    println(request)
+    println(request.body)
     implicit val ec = ExecutionContext.global
     request.body.validate[EmailARRequest].fold(
       errors => Future.successful(BadRequest(JsError.toJson(errors))),
@@ -67,5 +67,17 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
     emailARService.listAllEmailARs map { emailARs =>
       Ok(Json.toJson(emailARs))
     }
+  }
+  def sendMail() = Action(parse.json).async  { implicit request =>
+    println(request)
+    println(request.body)
+    implicit val ec = ExecutionContext.global
+    request.body.validate[Email].fold(
+      errors => Future.successful(BadRequest(JsError.toJson(errors))),
+      email => {
+        println("this is a valid email")
+        Future.successful(Ok(Json.toJson(email)))
+      }
+    )
   }
 }
