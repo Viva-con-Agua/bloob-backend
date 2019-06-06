@@ -23,3 +23,4 @@ POST    /create                     controllers.ApplicationController.create
 POST    /get                        controllers.ApplicationController.getByRole2
 POST    /delete                     controllers.ApplicationController.deleteEmailAR2
 POST    /send                       controllers.ApplicationController.sendMail
+

@@ -1,11 +1,11 @@
 package controllers
 
 import javax.inject._
-import models.{EmailAR, EmailARRequest, EmailARDeleteRequest, Email}
+import models.{EmailAccessRight, EmailARRequest, EmailARDeleteRequest, Email}
 import play.api.Logging
 import play.api.mvc._
 import play.api.libs.json.{JsError, JsValue, Json}
-import services.EmailARService
+import services.EmailAccessRightsService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -14,7 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class ApplicationController @Inject()(cc: ControllerComponents, emailARService: EmailARService) extends AbstractController(cc) with Logging {
+class ApplicationController @Inject()(cc: ControllerComponents, emailARService: EmailAccessRightsService) extends AbstractController(cc) with Logging {
 
   def deleteEmailAR2 = Action(parse.json).async { implicit request =>
     //println(request)
@@ -49,14 +49,14 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
     //println(request)
     //println(request.body)
     implicit val ec = ExecutionContext.global
-    request.body.validate[EmailAR].fold(
+    request.body.validate[EmailAccessRight].fold(
       errors => Future.successful(BadRequest(JsError.toJson(errors))),
-      emailAR => {
-        emailARService.addEmailAR(emailAR).map(emailAROption => emailAROption match {
+      emailAccessRights => {
+        emailARService.addEmailAR(emailAccessRights).map(emailAROption => emailAROption match {
           case Some(u) => Ok(Json.toJson( u ))
           case None => InternalServerError( Json.obj(
             "msg" -> "Was not able to save the data",
-            "obj" -> Json.toJson(emailAR)
+            "obj" -> Json.toJson(emailAccessRights)
           ))
         })
       }

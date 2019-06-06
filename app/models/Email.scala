@@ -9,14 +9,23 @@ import play.api.libs.json._
 import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
 
+//frontend model
 case class Email(
+  id: Long,
+  senderUUID: String,
+  senderRole: String, 
+  senderMail: String,
   recipients: Array[String],
-  subject: String, 
-  senderName: String, 
-  senderMail: String, 
+  subject: String,  
   messageData: String
 )
 
 object Email {
   implicit val emailFormat = Json.format[Email]
 }
+
+case class EmailRecipient(
+  id: Long,
+  emailID: Long,
+  recipientUUID: Long
+)

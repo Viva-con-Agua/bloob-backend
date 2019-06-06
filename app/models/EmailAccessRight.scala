@@ -10,7 +10,7 @@ import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
 
 
-case class EmailAR(
+case class EmailAccessRight(
   id: Long, 
   roleName: String, 
   pillar: String, 
@@ -18,8 +18,8 @@ case class EmailAR(
   email: String
   )
 
-object EmailAR {
-  implicit val emailARFormat = Json.format[EmailAR]
+object EmailAccessRight {
+  implicit val emailARFormat = Json.format[EmailAccessRight]
 }
 
 case class EmailARRequest(

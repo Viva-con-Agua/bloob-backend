@@ -9,11 +9,11 @@ import play.api.libs.json._
 import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
 
-import models.{EmailAR, EmailARRequest}
+import models.{EmailAccessRight, EmailARRequest}
 
 import slick.jdbc.MySQLProfile.api._
 
-class EmailARTableDef(tag: Tag) extends Table[EmailAR](tag, "emailAR") {
+class EmailAccessRightsTableDef(tag: Tag) extends Table[EmailAccessRight](tag, "email_access_rights") {
 
   def id = column[Long]("id", O.PrimaryKey,O.AutoInc)
   def roleName = column[String]("role_name")
@@ -22,29 +22,29 @@ class EmailARTableDef(tag: Tag) extends Table[EmailAR](tag, "emailAR") {
   def email = column[String]("email")
 
   override def * =
-    (id, roleName, pillar, crewName, email) <>((EmailAR.apply _).tupled, EmailAR.unapply)
+    (id, roleName, pillar, crewName, email) <>((EmailAccessRight.apply _).tupled, EmailAccessRight.unapply)
 }
 
 /**
  * Database-Access-Object (DAO)
  **/
-class EmailARdao @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
+class EmailAccessRightDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
 
-  val emailARs = TableQuery[EmailARTableDef]
+  val emailARs = TableQuery[EmailAccessRightsTableDef]
 
-  def add(emailAR: EmailAR): Future[Option[EmailAR]] = {
-    dbConfig.db.run(emailARs += emailAR).flatMap(id => get(id))
+  def add(emailAccessRights: EmailAccessRight): Future[Option[EmailAccessRight]] = {
+    dbConfig.db.run(emailARs += emailAccessRights).flatMap(id => get(id))
   }
 
   def delete(id: Long): Future[Int] = {
     dbConfig.db.run(emailARs.filter(_.id === id).delete)
   }
 
-  def get(id: Long): Future[Option[EmailAR]] = {
+  def get(id: Long): Future[Option[EmailAccessRight]] = {
     dbConfig.db.run(emailARs.filter(_.id === id).result.headOption)
   }
 
-  def listAll: Future[Seq[EmailAR]] = {
+  def listAll: Future[Seq[EmailAccessRight]] = {
    dbConfig.db.run(emailARs.result)
   }
 

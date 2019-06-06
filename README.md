@@ -4,7 +4,7 @@
 
 ### a record 
 <pre>
-EmailAR(id: Long, roleName: String, crewName: String, email: String)
+EmailAccessRight(id: Long, roleName: String, crewName: String, email: String)
 </pre>
 ### available REST calls
 <pre>
@@ -12,7 +12,7 @@ GET     /all
 return all records in db
 
 POST    /create
-expects a record (EmailAR), the actual id will be given when inserting into the db
+expects a record (EmailAccessRight), the actual id will be given when inserting into the db
 
 POST    /get
 given an EmailARRequest(roleName: Array[String],crewName: String)
