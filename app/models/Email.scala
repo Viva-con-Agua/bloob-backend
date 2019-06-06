@@ -13,7 +13,7 @@ import scala.concurrent.{ExecutionContext, Future}
 case class Email(
   id: Long,
   senderUUID: String,
-  senderRole: String, 
+  senderName: String, 
   senderMail: String,
   recipients: Array[String],
   subject: String,  
@@ -27,5 +27,5 @@ object Email {
 case class EmailRecipient(
   id: Long,
   emailID: Long,
-  recipientUUID: Long
+  recipientUUID: String
 )

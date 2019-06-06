@@ -5,7 +5,7 @@ import models.{EmailAccessRight, EmailARRequest, EmailARDeleteRequest, Email}
 import play.api.Logging
 import play.api.mvc._
 import play.api.libs.json.{JsError, JsValue, Json}
-import services.EmailAccessRightsService
+import services.{EmailAccessRightsService, EmailService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -14,7 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class ApplicationController @Inject()(cc: ControllerComponents, emailARService: EmailAccessRightsService) extends AbstractController(cc) with Logging {
+class ApplicationController @Inject()(cc: ControllerComponents, emailARService: EmailAccessRightsService, emailService: EmailService) extends AbstractController(cc) with Logging {
 
   def deleteEmailAR2 = Action(parse.json).async { implicit request =>
     //println(request)
@@ -72,11 +72,18 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
     println(request)
     println(request.body)
     implicit val ec = ExecutionContext.global
-    request.body.validate[Email].fold(
+    val validEmail = request.body.validate[Email]
+    validEmail.fold(
       errors => Future.successful(BadRequest(JsError.toJson(errors))),
       email => {
-        println("this is a valid email")
-        Future.successful(Ok(Json.toJson(email)))
+        println("validated")
+        emailService.insertEmail(email).map(emailOption => emailOption match {
+          case Some(u) => Ok(Json.toJson( u ))
+          case None => InternalServerError( Json.obj(
+            "msg" -> "Was not able to save the data",
+            "obj" -> Json.toJson(email)
+          ))
+        })
       }
     )
   }
