@@ -15,6 +15,9 @@ class EmailService @Inject() (emailDAO: EmailDAO) {
     println("building emailEntry")
     return emailDAO.insertEmail(emailEntry, email.recipients)
   }
+  def getAllMails(): Future[Seq[EmailReader]] = {
+    emailDAO.getAllMails
+  }
 /*
   def deleteEmail(id: Long): Future[Int] = {
     emailDAO.delete(id)

@@ -77,7 +77,7 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
       errors => Future.successful(BadRequest(JsError.toJson(errors))),
       email => {
         println("validated")
-        mailerService.sendEmail(email)
+        //mailerService.sendEmail(email)
         emailService.insertEmail(email).map(emailOption => emailOption match {
           case Some(u) => Ok(Json.toJson( u ))
           case None => InternalServerError( Json.obj(
@@ -87,5 +87,11 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
         })
       }
     )
+  }
+  def getAllMails() = Action.async {implicit request: Request[AnyContent] =>
+    println("all saved emails requested")
+    emailService.getAllMails map { emails =>
+      Ok(Json.toJson(emails))
+    }
   }
 }

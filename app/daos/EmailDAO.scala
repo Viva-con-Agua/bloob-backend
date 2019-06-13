@@ -64,6 +64,10 @@ class EmailDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
  
     dbConfig.db.run(insertEmailAction)
   }
+
+  def getAllMails: Future[Seq[EmailReader]] = {
+   dbConfig.db.run(emails.result)
+  }
 /*
   def delete(id: Long): Future[Int] = {
     dbConfig.db.run(emails.filter(_.id === id).delete)
