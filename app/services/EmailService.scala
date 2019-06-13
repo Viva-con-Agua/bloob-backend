@@ -10,7 +10,8 @@ import scala.concurrent.Future
 class EmailService @Inject() (emailDAO: EmailDAO) {
 
   def insertEmail(email: Email): Future[Option[EmailReader]] = {
-    var emailEntry = EmailReader(email.id, email.senderUUID, email.senderName, email.senderMail, email.subject, email.messageData)
+    var emailEntry = EmailReader(email.id, email.senderUUID, email.senderName, email.senderMail, email.senderCrew.name, email.senderCrew.id, email.subject, email.messageData, email.status)
+    //var emailEntry = (EmailReader.apply _).tupled(email.tupled)
     println("building emailEntry")
     return emailDAO.insertEmail(emailEntry, email.recipients)
   }

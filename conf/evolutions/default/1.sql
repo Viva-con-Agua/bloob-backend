@@ -20,8 +20,11 @@ CREATE TABLE `email` (
   `sender_uuid` VARCHAR(255) NOT NULL,
   `sender_role` VARCHAR(255) NOT NULL,
   `sender_mail` VARCHAR(255) NOT NULL,
+  `sender_crew_name` VARCHAR(255) NOT NULL,
+  `sender_crew_id` VARCHAR(255) NOT NULL,
   `subject` VARCHAR(255) NOT NULL,
   `message_data` VARCHAR(255) NOT NULL,
+  `status` VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 );
 

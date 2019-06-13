@@ -20,11 +20,14 @@ class EmailTableDef(tag: Tag) extends Table[EmailReader](tag, "email") {
   def senderUUID = column[String]("sender_uuid")
   def senderName = column[String]("sender_role")
   def senderMail = column[String]("sender_mail")
+  def senderCrewName = column[String]("sender_crew_name")
+  def senderCrewId = column[String]("sender_crew_id")
   def subject = column[String]("subject")
   def messageData = column[String]("message_data")
+  def status = column[String]("status")
 
   override def * =
-    (id, senderUUID, senderName, senderMail, subject, messageData) <>((EmailReader.apply _).tupled, EmailReader.unapply)
+    (id, senderUUID, senderName, senderCrewName, senderCrewId, senderMail, subject, messageData, status) <>((EmailReader.apply _).tupled, EmailReader.unapply)
 }
 
 class EmailRecipientsTableDef(tag: Tag) extends Table[EmailRecipient](tag, "email_recipient") {
