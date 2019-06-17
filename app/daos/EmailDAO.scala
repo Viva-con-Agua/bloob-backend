@@ -8,6 +8,7 @@ import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.json._
 import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
+import java.sql.Date
 
 import models.{Email, EmailRecipient}
 import daos.reader.EmailReader
@@ -24,10 +25,11 @@ class EmailTableDef(tag: Tag) extends Table[EmailReader](tag, "email") {
   def senderCrewId = column[String]("sender_crew_id")
   def subject = column[String]("subject")
   def messageData = column[String]("message_data")
+  def date = column[Date]("date")
   def status = column[String]("status")
 
   override def * =
-    (id, senderUUID, senderName, senderCrewName, senderCrewId, senderMail, subject, messageData, status) <>((EmailReader.apply _).tupled, EmailReader.unapply)
+    (id, senderUUID, senderName, senderCrewName, senderCrewId, senderMail, subject, messageData, date, status) <>((EmailReader.apply _).tupled, EmailReader.unapply)
 }
 
 class EmailRecipientsTableDef(tag: Tag) extends Table[EmailRecipient](tag, "email_recipient") {

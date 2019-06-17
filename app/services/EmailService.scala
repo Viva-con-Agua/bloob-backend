@@ -4,13 +4,17 @@ import com.google.inject.Inject
 import models.Email
 import daos.EmailDAO
 import daos.reader.EmailReader
+import java.sql.Date
 
 import scala.concurrent.Future
 
 class EmailService @Inject() (emailDAO: EmailDAO) {
 
   def insertEmail(email: Email): Future[Option[EmailReader]] = {
-    var emailEntry = EmailReader(email.id, email.senderUUID, email.senderName, email.senderMail, email.senderCrew.name, email.senderCrew.id, email.subject, email.messageData, email.status)
+    var date = new Date(System.currentTimeMillis())
+    println("Date")
+    print(date)
+    var emailEntry = EmailReader(email.id, email.senderUUID, email.senderName, email.senderMail, email.senderCrew.name, email.senderCrew.id, email.subject, email.messageData, date, email.status)
     //var emailEntry = (EmailReader.apply _).tupled(email.tupled)
     println("building emailEntry")
     return emailDAO.insertEmail(emailEntry, email.recipients)

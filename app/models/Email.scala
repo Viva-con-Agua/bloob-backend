@@ -8,6 +8,7 @@ import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.json._
 import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
+import java.sql.Date
 
 
 case class Crew(
@@ -31,6 +32,7 @@ case class Email(
   recipients: Array[String],
   subject: String,  
   messageData: String,
+  date: Option[Date],
   status: String
 )
 

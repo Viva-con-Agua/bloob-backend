@@ -24,6 +24,7 @@ CREATE TABLE `email` (
   `sender_crew_id` VARCHAR(255) NOT NULL,
   `subject` VARCHAR(255) NOT NULL,
   `message_data` VARCHAR(255) NOT NULL,
+  `date` DATE NOT NULL,
   `status` VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 );
