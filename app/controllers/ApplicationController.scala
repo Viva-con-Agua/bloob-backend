@@ -90,7 +90,7 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
   }
   def getAllMails() = Action.async {implicit request: Request[AnyContent] =>
     println("all saved emails requested")
-    emailService.getAllMails map { emails =>
+    emailService.getAllMailsFull map { emails =>
       Ok(Json.toJson(emails))
     }
   }
