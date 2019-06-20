@@ -23,7 +23,19 @@ case class EmailReader(
       senderName, 
       senderMail,
       Crew(senderCrewId,senderCrewName,None,None),
-      Array[String](),
+      Array.empty[String],
+      subject,  
+      messageData,
+      Some(date),
+      status
+      )
+      def toEmail(recipients: Seq[String]): Email = Email(  
+      id,
+      senderUUID,
+      senderName, 
+      senderMail,
+      Crew(senderCrewId,senderCrewName,None,None),
+      recipients,
       subject,  
       messageData,
       Some(date),

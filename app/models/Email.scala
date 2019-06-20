@@ -29,7 +29,7 @@ case class Email(
   senderName: String, 
   senderMail: String,
   senderCrew: Crew,
-  recipients: Array[String],
+  recipients: Seq[String],
   subject: String,  
   messageData: String,
   date: Option[Date],

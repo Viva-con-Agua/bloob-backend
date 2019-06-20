@@ -5,7 +5,7 @@ import models.Email
 import daos.EmailDAO
 import daos.reader.EmailReader
 import java.sql.Date
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future, Await}
 import scala.concurrent.duration._
 import scala.util.{Try, Success, Failure}
 
@@ -25,22 +25,49 @@ class EmailService @Inject() (emailDAO: EmailDAO) {
   def getAllMails(): Future[Seq[EmailReader]] = {
     emailDAO.getAllMails
   }
-  def getAllMailsFull(): Future[Array[Email]] = {
+  def getAllMailsFull(): Future[Seq[Email]] = {
     implicit val ec = ExecutionContext.global
     var emailReadersFuture = emailDAO.getAllMails;
-    var emails = Array.empty[Email];
-    //println(emailReadersFuture);
+    println(emailReadersFuture);
+    var emails = Seq.empty[Email];
 
-    emailReadersFuture.onComplete({
-      case Success(emailReaders) => {
-        emailReaders.foreach {
+    //emailReadersFuture.onComplete({
+    var emailReaders = Await.result(emailReadersFuture, 10 seconds)
+    //  case Success(emailReaders) => {
+        println("waited for emailReaders future")
+        println(emailReaders);
+        emails = emailReaders.map( x => {
+          var recipientsFuture = emailDAO.getRecipients(x.id);
+          var recipients = Await.result(recipientsFuture, 10 seconds)
+          x.toEmail(recipients)
+          
+        })
+    //  }
+    
+      
+        
+//        println(emails)
+//        println(emails.last)
+
+        /*emailReaders.foreach {
           case emailReader => {
-            //println("hallo im foreach")
+            println("foreach emailReader");
             //println(emailReader)
-            emails :+ emailReader.toEmail
-            emailDAO.getRecipients(emailReader.id).onComplete({
+            emails :+ emailReader.toEmail;
+            println(emails);
+            println(emails.last)
+            var recipientsFuture = emailDAO.getRecipients(emailReader.id);
+            recipientsFuture.onComplete({
               case Success(recipients) => {
-                emails.last.recipients = recipients
+                println("all recipients");
+                println(recipients);
+                recipients.foreach {
+                  case recipient => {
+                    println("foreach recipient");
+                    println(recipient);
+                    emails.last.recipients :+ recipient;
+                  }
+                }
               }
               case Failure(exception) => {
                 println("error getting recipients")
@@ -48,15 +75,17 @@ class EmailService @Inject() (emailDAO: EmailDAO) {
               }
             })
           }
-        }
-      }
+        }*/
+     /* 
       case Failure(exception) => {
         println("error:")
         println(exception)
       }
-    })
-    return emails
-
+    })*/
+    println("returning")
+    println(emails)
+    return Future(emails);
+    
     /*
     for(n <- emailReaders){
       println(n);
@@ -65,7 +94,6 @@ class EmailService @Inject() (emailDAO: EmailDAO) {
     //  emails :+ emailTemp;
     }
 */
-    return Future(emails);
   }
 /*
   def deleteEmail(id: Long): Future[Int] = {
