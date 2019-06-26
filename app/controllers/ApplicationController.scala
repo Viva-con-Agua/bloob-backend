@@ -10,13 +10,18 @@ import services.{EmailAccessRightsService, EmailService, MailerService}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+import com.mohiva.play.silhouette.api.Silhouette
+import org.vivaconagua.play2OauthClient.silhouette.{CookieEnv, UserService}
+import org.vivaconagua.play2OauthClient.drops._
+
+
 import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class ApplicationController @Inject()(cc: ControllerComponents, emailARService: EmailAccessRightsService, emailService: EmailService, mailerService: MailerService) extends AbstractController(cc) with Logging {
+class ApplicationController @Inject()(cc: ControllerComponents, silhouette: Silhouette[CookieEnv], emailARService: EmailAccessRightsService, emailService: EmailService, mailerService: MailerService) extends AbstractController(cc) with Logging {
 
-  def deleteEmailAR2 = Action(parse.json).async { implicit request =>
+  def deleteEmailAR2 = silhouette.SecuredAction.async(parse.json) { implicit request =>
     //println(request)
     //println(request.body)
     implicit val ec = ExecutionContext.global
