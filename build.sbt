@@ -16,7 +16,7 @@ resolvers ++= Seq(
 
 libraryDependencies += ehcache
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
-libraryDependencies += "org.vivaconagua" %% "play2-oauth-client" % "0.4.4-play27"
+libraryDependencies += "org.vivaconagua" %% "play2-oauth-client" % "0.4.7-play27"
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.8.1"
 libraryDependencies += "com.typesafe.play" %% "play-mailer" % "6.0.1"
 libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % "6.0.1"
