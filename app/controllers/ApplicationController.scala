@@ -19,7 +19,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class ApplicationController @Inject()(cc: ControllerComponents, silhouette: Silhouette[CookieEnv], emailARService: EmailAccessRightsService, emailService: EmailService, mailerService: MailerService) extends AbstractController(cc) with Logging {
+class ApplicationController @Inject()(
+  cc: ControllerComponents,
+  silhouette: Silhouette[CookieEnv],
+  userService: UserService,
+  emailARService: EmailAccessRightsService,
+  emailService: EmailService,
+  mailerService: MailerService
+) extends AbstractController(cc) with Logging {
 
   def deleteEmailAR2 = silhouette.SecuredAction.async(parse.json) { implicit request =>
     //println(request)
