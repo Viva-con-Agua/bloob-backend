@@ -42,7 +42,7 @@ class ApplicationController @Inject()(
     )
   }
 
-  def getByRole2 = Action(parse.json).async { implicit request =>
+  def getByRole2 = silhouette.SecuredAction.async(parse.json) { implicit request =>
     println(request)
     println(request.body)
     implicit val ec = ExecutionContext.global
@@ -57,7 +57,7 @@ class ApplicationController @Inject()(
     )
   }
 
-  def create = Action(parse.json).async { implicit request =>
+  def create = silhouette.SecuredAction.async(parse.json) { implicit request =>
     //println(request)
     //println(request.body)
     implicit val ec = ExecutionContext.global
@@ -75,12 +75,12 @@ class ApplicationController @Inject()(
     )
   }
   
-  def listAllEmailARs() = Action.async {implicit request: Request[AnyContent] =>
+  def listAllEmailARs() = silhouette.SecuredAction.async {implicit request: Request[AnyContent] =>
     emailARService.listAllEmailARs map { emailARs =>
       Ok(Json.toJson(emailARs))
     }
   }
-  def sendMail() = Action(parse.json).async  { implicit request =>
+  def sendMail() = silhouette.SecuredAction.async(parse.json)  { implicit request =>
     println(request)
     println(request.body)
     implicit val ec = ExecutionContext.global
@@ -100,7 +100,7 @@ class ApplicationController @Inject()(
       }
     )
   }
-  def getAllMails() = Action.async {implicit request: Request[AnyContent] =>
+  def getAllMails() = silhouette.SecuredAction.async {implicit request: Request[AnyContent] =>
     println("all saved emails requested")
     emailService.getAllMailsFull map { emails =>
       Ok(Json.toJson(emails))
