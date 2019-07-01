@@ -1,22 +1,36 @@
 package controllers
 
 import javax.inject._
-import models.{EmailAR, EmailARRequest, EmailARDeleteRequest}
+import models.{EmailAccessRight, EmailARRequest, EmailARDeleteRequest, Email}
 import play.api.Logging
 import play.api.mvc._
 import play.api.libs.json.{JsError, JsValue, Json}
-import services.EmailARService
+import services.{EmailAccessRightsService, EmailService, MailerService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+import com.mohiva.play.silhouette.api.Silhouette
+import org.vivaconagua.play2OauthClient.silhouette.{CookieEnv, UserService}
+import org.vivaconagua.play2OauthClient.drops.authorization._
+
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class ApplicationController @Inject()(cc: ControllerComponents, emailARService: EmailARService) extends AbstractController(cc) with Logging {
+class ApplicationController @Inject()(
+  cc: ControllerComponents,
+  silhouette: Silhouette[CookieEnv],
+  userService: UserService,
+  emailARService: EmailAccessRightsService,
+  emailService: EmailService,
+  mailerService: MailerService
+) extends AbstractController(cc) with Logging {
 
-  def deleteEmailAR2 = Action(parse.json).async { implicit request =>
+  def deleteEmailAR = silhouette.SecuredAction( 
+    IsEmployee || IsAdmin )
+    .async(parse.json) { implicit request =>
     //println(request)
     //println(request.body)
     implicit val ec = ExecutionContext.global
@@ -30,7 +44,7 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
     )
   }
 
-  def getByRole2 = Action(parse.json).async { implicit request =>
+  def getByRole2 = silhouette.SecuredAction.async(parse.json) { implicit request =>
     //println(request)
     //println(request.body)
     implicit val ec = ExecutionContext.global
@@ -45,27 +59,61 @@ class ApplicationController @Inject()(cc: ControllerComponents, emailARService: 
     )
   }
 
-  def create = Action(parse.json).async { implicit request =>
+  def create = silhouette.SecuredAction.async(parse.json) { implicit request =>
     //println(request)
     //println(request.body)
     implicit val ec = ExecutionContext.global
-    request.body.validate[EmailAR].fold(
+    request.body.validate[EmailAccessRight].fold(
       errors => Future.successful(BadRequest(JsError.toJson(errors))),
-      emailAR => {
-        emailARService.addEmailAR(emailAR).map(emailAROption => emailAROption match {
+      emailAccessRights => {
+        emailARService.addEmailAR(emailAccessRights).map(emailAROption => emailAROption match {
           case Some(u) => Ok(Json.toJson( u ))
           case None => InternalServerError( Json.obj(
             "msg" -> "Was not able to save the data",
-            "obj" -> Json.toJson(emailAR)
+            "obj" -> Json.toJson(emailAccessRights)
           ))
         })
       }
     )
   }
   
-  def listAllEmailARs() = Action.async {implicit request: Request[AnyContent] =>
+  def listAllEmailARs() = silhouette.SecuredAction.async {implicit request: Request[AnyContent] =>
     emailARService.listAllEmailARs map { emailARs =>
       Ok(Json.toJson(emailARs))
+    }
+  }
+  def sendMail() = silhouette.SecuredAction.async(parse.json)  { implicit request =>
+    println(request)
+    println(request.body)
+    implicit val ec = ExecutionContext.global
+    val validEmail = request.body.validate[Email]
+    validEmail.fold(
+      errors => Future.successful(BadRequest(JsError.toJson(errors))),
+      email => {
+        println("validated")
+        //mailerService.sendEmail(email)
+        emailService.insertEmail(email).map(emailOption => emailOption match {
+          case Some(u) => Ok(Json.toJson( u ))
+          case None => InternalServerError( Json.obj(
+            "msg" -> "Was not able to save the data",
+            "obj" -> Json.toJson(email)
+          ))
+        })
+      }
+    )
+  }
+  def getAllMails() = silhouette.SecuredAction.async {implicit request =>
+    println("all saved emails requested")
+    emailService.getAllMailsFull map { emails =>
+      Ok(Json.toJson(emails))
+    }
+  }
+  def getMyMails() = silhouette.SecuredAction.async {implicit request =>
+    println("all saved emails requested")
+    println("getting uuid of user: ")
+    println(request.identity.uuid)
+    emailService.getMyMailsFull(request.identity.uuid.toString()) map { emails =>
+      Ok(Json.toJson(emails))
     }
   }
 }
