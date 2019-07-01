@@ -31,10 +31,8 @@ class EmailService @Inject() (emailDAO: EmailDAO) {
     println(emailReadersFuture);
     var emails = Seq.empty[Email];
 
-    //emailReadersFuture.onComplete({
     var emailReaders = Await.result(emailReadersFuture, 10 seconds)
-    //  case Success(emailReaders) => {
-        println("waited for emailReaders future")
+        // println("waited for emailReaders future")
         println(emailReaders);
         emails = emailReaders.map( x => {
           var recipientsFuture = emailDAO.getRecipients(x.id);
@@ -42,61 +40,27 @@ class EmailService @Inject() (emailDAO: EmailDAO) {
           x.toEmail(recipients)
           
         })
-    //  }
-    
-      
-        
-//        println(emails)
-//        println(emails.last)
-
-        /*emailReaders.foreach {
-          case emailReader => {
-            println("foreach emailReader");
-            //println(emailReader)
-            emails :+ emailReader.toEmail;
-            println(emails);
-            println(emails.last)
-            var recipientsFuture = emailDAO.getRecipients(emailReader.id);
-            recipientsFuture.onComplete({
-              case Success(recipients) => {
-                println("all recipients");
-                println(recipients);
-                recipients.foreach {
-                  case recipient => {
-                    println("foreach recipient");
-                    println(recipient);
-                    emails.last.recipients :+ recipient;
-                  }
-                }
-              }
-              case Failure(exception) => {
-                println("error getting recipients")
-                println(exception)
-              }
-            })
-          }
-        }*/
-     /* 
-      case Failure(exception) => {
-        println("error:")
-        println(exception)
-      }
-    })*/
-    println("returning")
+    println("sending emails to frontend")
     println(emails)
     return Future(emails);
-    
-    /*
-    for(n <- emailReaders){
-      println(n);
-    //  var emailtemp = n.toEmail;
-    //  emailTemp.recipients = emailDAO.getRecipients(n.emailID);
-    //  emails :+ emailTemp;
-    }
-*/
   }
-/*
-  def deleteEmail(id: Long): Future[Int] = {
-    emailDAO.delete(id)
-  }*/
+  def getMyMailsFull(uuid: String): Future[Seq[Email]] = {
+    implicit val ec = ExecutionContext.global
+    var emailReadersFuture = emailDAO.getMyMails(uuid);
+    // TODO: get mails that i have received too
+    println(emailReadersFuture);
+    var emails = Seq.empty[Email];
+
+    var emailReaders = Await.result(emailReadersFuture, 10 seconds)
+        println(emailReaders);
+        emails = emailReaders.map( x => {
+          var recipientsFuture = emailDAO.getRecipients(x.id);
+          var recipients = Await.result(recipientsFuture, 10 seconds)
+          x.toEmail(recipients)
+          
+        })
+    println("sending emails to frontend")
+    println(emails)
+    return Future(emails);
+  }
 }

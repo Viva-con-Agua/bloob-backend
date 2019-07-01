@@ -68,17 +68,14 @@ class EmailDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
   }
 
   def getAllMails: Future[Seq[EmailReader]] = {
-   dbConfig.db.run(emails.result)
+    dbConfig.db.run(emails.result)
   }
 
-  /*def getAllMails2: Future[Seq[EmailReader]] = {
-    val innerJoin = emails.flatMap(email => 
-      emailRecipients.filter(emailRecipient => 
-        email.id === emailRecipient.emailID).map(emailRecipient => 
-          (email,emailRecipient))
-    )
-    dbConfig.db.run(innerJoin.result)
-  }*/
+  def getMyMails(uuid: String): Future[Seq[EmailReader]] = {
+    var q = emails.filter(entry =>
+    entry.senderUUID === uuid)
+    dbConfig.db.run(q.result)
+  }
 
   def getRecipients(emailID: Long): Future[Seq[String]] = {
     var q = emailRecipients.filter(entry => 

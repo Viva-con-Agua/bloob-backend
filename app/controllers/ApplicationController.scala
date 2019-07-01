@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 import com.mohiva.play.silhouette.api.Silhouette
 import org.vivaconagua.play2OauthClient.silhouette.{CookieEnv, UserService}
-import org.vivaconagua.play2OauthClient.drops._
+import org.vivaconagua.play2OauthClient.drops.authorization._
 
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,7 +28,9 @@ class ApplicationController @Inject()(
   mailerService: MailerService
 ) extends AbstractController(cc) with Logging {
 
-  def deleteEmailAR2 = silhouette.SecuredAction.async(parse.json) { implicit request =>
+  def deleteEmailAR = silhouette.SecuredAction( 
+    IsEmployee || IsAdmin )
+    .async(parse.json) { implicit request =>
     //println(request)
     //println(request.body)
     implicit val ec = ExecutionContext.global
@@ -43,8 +45,8 @@ class ApplicationController @Inject()(
   }
 
   def getByRole2 = silhouette.SecuredAction.async(parse.json) { implicit request =>
-    println(request)
-    println(request.body)
+    //println(request)
+    //println(request.body)
     implicit val ec = ExecutionContext.global
     request.body.validate[EmailARRequest].fold(
       errors => Future.successful(BadRequest(JsError.toJson(errors))),
@@ -100,9 +102,17 @@ class ApplicationController @Inject()(
       }
     )
   }
-  def getAllMails() = silhouette.SecuredAction.async {implicit request: Request[AnyContent] =>
+  def getAllMails() = silhouette.SecuredAction.async {implicit request =>
     println("all saved emails requested")
     emailService.getAllMailsFull map { emails =>
+      Ok(Json.toJson(emails))
+    }
+  }
+  def getMyMails() = silhouette.SecuredAction.async {implicit request =>
+    println("all saved emails requested")
+    println("getting uuid of user: ")
+    println(request.identity.uuid)
+    emailService.getMyMailsFull(request.identity.uuid.toString()) map { emails =>
       Ok(Json.toJson(emails))
     }
   }
