@@ -25,4 +25,5 @@ POST    /delete                     controllers.ApplicationController.deleteEmai
 POST    /send                       controllers.ApplicationController.sendMail
 GET     /getAllMails                controllers.ApplicationController.getAllMails
 GET     /getMyMails                 controllers.ApplicationController.getMyMails
+GET     /dropsRest                  controllers.ApplicationController.testDropsRest
 

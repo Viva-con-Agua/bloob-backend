@@ -1,6 +1,12 @@
 package controllers
 
 import javax.inject._
+import java.util.UUID
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
+import play.api.libs.ws.WSClient
+import utils.{Ascending, Descending, SortDir}
+import play.api.Configuration
 import models.{EmailAccessRight, EmailARRequest, EmailARDeleteRequest, Email}
 import play.api.Logging
 import play.api.mvc._
@@ -9,6 +15,8 @@ import services.{EmailAccessRightsService, EmailService, MailerService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 import com.mohiva.play.silhouette.api.Silhouette
 import org.vivaconagua.play2OauthClient.silhouette.{CookieEnv, UserService}
@@ -25,8 +33,14 @@ class ApplicationController @Inject()(
   userService: UserService,
   emailARService: EmailAccessRightsService,
   emailService: EmailService,
-  mailerService: MailerService
+  mailerService: MailerService,
+  ws: WSClient,
+  config: Configuration,
 ) extends AbstractController(cc) with Logging {
+
+  val path : String = config.get[String]("drops.rest.base") + config.get[String]("drops.rest.user.path")
+  val client_id = config.get[String]("drops.client_id")
+  val client_secret = config.get[String]("drops.client_secret")
 
   def deleteEmailAR = silhouette.SecuredAction( 
     IsEmployee || IsAdmin )
@@ -116,4 +130,109 @@ class ApplicationController @Inject()(
       Ok(Json.toJson(emails))
     }
   }
+  def testDropsRest() = Action.async { implicit request =>
+    println("hello test")
+    var aUuid = UUID.fromString("c3702bf6-9e98-4b7b-957e-261ea12c552c")
+    println(aUuid)
+    var listUuid = List(aUuid)
+    var requestC = UserCrewRequest(listUuid)
+    var requestString = requestC.toString
+    println(path)
+    println(requestString)
+    var myresult=Await.result(
+    ws.url(path)
+      .addQueryStringParameters("client_id" -> client_id, "client_secret" -> client_secret)
+      .post(Json.toJson(requestString))
+      //.map(theResonse => println(theResonse))
+    ,10 seconds
+    ).body
+    //var emails = myresult.map(x => x.profiles.email)
+    Future(Ok(myresult))
+  
+  }
+
+  case class UserCrewRequest(userIds: List[UUID], dir: SortDir = Ascending) {
+//    println(this.toString)
+
+    /**
+      * Generates a JSON string equivalent to the request body.
+      *
+      * @author Johann Sell
+      * @return
+      */
+    override def toString: String = Json.obj(
+      "query" -> this.toQuery,
+      "values" -> this.toValues,
+      "sort" -> this.toSort
+    ).toString()
+
+    /**
+      * Generates the query string.
+      *
+      * @author Johann Sell
+      * @return
+      */
+    def toQuery : String = userIds.indices.map("user.publicId." + _ + ".=").mkString("_OR_")
+
+    /**
+      * Generates the JSON that can be used as values attribute of a drops REST query.
+      *
+      * @author Johann Sell
+      * @return
+      */
+    def toValues : JsValue = Json.obj("user" -> Json.obj(
+      "publicId" -> userIds.zipWithIndex.map(_.swap).foldLeft[JsObject](Json.obj())((json, i_id) =>
+        json ++ Json.obj(i_id._1.toString -> Json.toJson(i_id._2))
+      )
+    ))
+
+    /**
+      * Generates the JSON that can be used as sort attribute of a drops REST query.
+      * @return
+      */
+    def toSort : JsValue =
+      Json.obj("attributes" -> Json.toJson(List("SupporterCrew_name")), "dir" -> dir.name)
+  }
+
+  /**
+    * Companion object for request class.
+    *
+    * @author Johann Sell
+    */
+  object UserCrewRequest {
+    /**
+      * Generates JSON (Writes)
+      *
+      * @author Johann Sell
+      */
+    implicit val crewRequestWrites: Writes[UserCrewRequest] = (
+      (JsPath \ "query").write[String] and
+        (JsPath \ "values").write[JsValue] and
+        (JsPath \ "sort").write[JsValue]
+    )((request: UserCrewRequest) => (request.toQuery, request.toValues, request.toSort))
+  }
+
+    /**
+    * Represents a Drops REST response.
+    *
+    * @author Johann Sell
+    * @param id
+    * @param crew
+    */
+  case class UserResponse(id: UUID, crew: Option[UUID])
+
+  /**
+    * Companion object for a Drops REST repsonse.
+    *
+    * @author Johann Sell
+    */
+  object UserResponse {
+//    implicit val userResponseFormat = Json.format[UserResponse]
+    implicit val userResponseReads : Reads[UserResponse] = (
+      (JsPath \ "id").read[UUID] and
+        (JsPath \ "profiles" \\ "supporter" \ "crew" \ "id").readNullable[UUID]
+    )((userId, crewIds) => UserResponse(userId, crewIds))
+}
+  
+//end
 }
