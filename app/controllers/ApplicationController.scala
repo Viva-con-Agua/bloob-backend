@@ -132,7 +132,10 @@ class ApplicationController @Inject()(
   }
   def testDropsRest() = Action.async { implicit request =>
     println("hello test")
-    var aUuid = UUID.fromString("c3702bf6-9e98-4b7b-957e-261ea12c552c")
+    
+    //var aUuid = UUID.fromString("c3702bf6-9e98-4b7b-957e-261ea12c552c")
+    var aUuid = UUID.fromString("58fd2d56-fa65-4a11-a3a8-7991cadc1809")
+    
     println(aUuid)
     var listUuid = List(aUuid)
     var requestC = UserCrewRequest(listUuid)
@@ -147,9 +150,44 @@ class ApplicationController @Inject()(
     ,10 seconds
     ).body
     //var emails = myresult.map(x => x.profiles.email)
-    Future(Ok(myresult))
+    //myresult[0].user.profiles[0].email
+    //for (x <- Json.parse(myresult)) {println(x)}
+    val myjson = Json.parse(myresult)(0)
+    println(myjson)
+    //println("looking at \\ profiles(0)")
+    //println((myjson \ "profiles")(0))
+    println("-----------------------------------")
+    //println("looking at \\ profiles(0) \\ email")
+    println( ( (myjson \ "profiles")(0) \ "email" ) )
+    var anEmail = ( (myjson \ "profiles")(0) \ "email" ).get
+
+    val myjsonList = Json.parse(myresult)
+
+    println("now trying with list and map")
+    println(myjsonList)
+    
+    /*var emailsList = myjsonList.map ( x => 
+      ( (x \ "profiles")(0) \ "email" ).get
+    )
+    println(emailsList)
+*/
+
+    //((Json.parse(myresult) \ "suspendData") \ "d")(1)
+
+    Future(Ok(anEmail))
   
   }
+
+  /**
+* Returns a JSON object that represents a valid request body. It has to be used to request the user from Drops represented by the given UUIDs.
+*/
+def getEmailQuery(userIds: List[UUID]): JsValue = {
+  Json.obj("user" -> Json.obj(
+      "publicId" -> userIds.zipWithIndex.map(_.swap).foldLeft[JsObject](Json.obj())((json, i_id) =>
+        json ++ Json.obj(i_id._1.toString -> Json.toJson(i_id._2))
+      )
+    ))
+}
 
   case class UserCrewRequest(userIds: List[UUID], dir: SortDir = Ascending) {
 //    println(this.toString)
