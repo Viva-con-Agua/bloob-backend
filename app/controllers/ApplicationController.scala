@@ -134,13 +134,12 @@ class ApplicationController @Inject()(
   def testDropsRest() = Action.async { implicit request =>
     println("hello test")
     
-    //84585ea3-87e3-4630-b6d5-1c19f9330efb
     //var aUuid = UUID.fromString("c3702bf6-9e98-4b7b-957e-261ea12c552c")
-    //var aUuid = UUID.fromString("58fd2d56-fa65-4a11-a3a8-7991cadc1809")
-    var aUuid = UUID.fromString("12345678-abcd-1234-abcd-1234abcd1234")
+    var aUuid = UUID.fromString("58fd2d56-fa65-4a11-a3a8-7991cadc1809")
+    //var aUuid = UUID.fromString("c6621c0c-7e6b-4706-a790-8e8a49b7a603")
     
     println(aUuid)
-    var listUuid = List(aUuid)
+    var listUuid = List(UUID.fromString("c3702bf6-9e98-4b7b-957e-261ea12c552c"),UUID.fromString("58fd2d56-fa65-4a11-a3a8-7991cadc1809"))
     var requestC = UserCrewRequest(listUuid)
     var requestString = requestC.toString
     println(path)
@@ -149,26 +148,38 @@ class ApplicationController @Inject()(
     ws.url(path)
       .addHttpHeaders("Content-Type" -> "application/json")
       .addQueryStringParameters("client_id" -> client_id, "client_secret" -> client_secret)
-      .post(Json.toJson(requestString))
-      //.map(theResonse => println(theResonse))
+      .post(requestString)
     ,10 seconds
     ).body
+
+    var myJsonResult = Json.parse(myresult)
+    //var myJsonResultArray = JSArray
+    //myJsonResult.map (x => println(x))
+    println(myJsonResult \\ "profiles")
+
+    var requestedEmails = (myJsonResult \\ "profiles").map ( x => 
+      ( (x(0) \ "email" ) ).get
+    )
+
+    println(requestedEmails)
+
     //var emails = myresult.map(x => x.profiles.email)
     //myresult[0].user.profiles[0].email
     //for (x <- Json.parse(myresult)) {println(x)}
-    val myjson = Json.parse(myresult)(0)
-    println(myjson)
+    println(Json.parse(myresult))
+    //val myjson = Json.parse(myresult)(0)
+    //println(myjson)
     //println("looking at \\ profiles(0)")
     //println((myjson \ "profiles")(0))
     println("-----------------------------------")
     //println("looking at \\ profiles(0) \\ email")
-    println( ( (myjson \ "profiles")(0) \ "email" ) )
-    var anEmail = ( (myjson \ "profiles")(0) \ "email" ).get
+    //println( ( (myjson \ "profiles")(0) \ "email" ) )
+    //var anEmail = ( (myjson \ "profiles")(0) \ "email" ).get
 
-    val myjsonList = Json.parse(myresult)
+    //val myjsonList = Json.parse(myresult)
 
-    println("now trying with list and map")
-    println(myjsonList)
+    //println("now trying with list and map")
+    //println(myjsonList)
     
     /*var emailsList = myjsonList.map ( x => 
       ( (x \ "profiles")(0) \ "email" ).get
@@ -178,7 +189,7 @@ class ApplicationController @Inject()(
 
     //((Json.parse(myresult) \ "suspendData") \ "d")(1)
 
-    Future(Ok(anEmail))
+    Future(Ok(Json.parse(myresult)))
   
   }
 
