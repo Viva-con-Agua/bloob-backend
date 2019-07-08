@@ -5,6 +5,7 @@ import java.util.UUID
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.libs.ws.WSClient
+import play.libs.ws._
 import utils.{Ascending, Descending, SortDir}
 import play.api.Configuration
 import models.{EmailAccessRight, EmailARRequest, EmailARDeleteRequest, Email}
@@ -133,8 +134,10 @@ class ApplicationController @Inject()(
   def testDropsRest() = Action.async { implicit request =>
     println("hello test")
     
+    //84585ea3-87e3-4630-b6d5-1c19f9330efb
     //var aUuid = UUID.fromString("c3702bf6-9e98-4b7b-957e-261ea12c552c")
-    var aUuid = UUID.fromString("58fd2d56-fa65-4a11-a3a8-7991cadc1809")
+    //var aUuid = UUID.fromString("58fd2d56-fa65-4a11-a3a8-7991cadc1809")
+    var aUuid = UUID.fromString("12345678-abcd-1234-abcd-1234abcd1234")
     
     println(aUuid)
     var listUuid = List(aUuid)
@@ -144,6 +147,7 @@ class ApplicationController @Inject()(
     println(requestString)
     var myresult=Await.result(
     ws.url(path)
+      .addHttpHeaders("Content-Type" -> "application/json")
       .addQueryStringParameters("client_id" -> client_id, "client_secret" -> client_secret)
       .post(Json.toJson(requestString))
       //.map(theResonse => println(theResonse))
