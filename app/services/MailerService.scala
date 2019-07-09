@@ -67,13 +67,14 @@ class MailerService @Inject() (implicit ws: WSClient, mailerClient: MailerClient
   def sendEmail(sendMe: FrontendEmail) = {
 
     var recipientsIds = sendMe.recipients.map (UUID.fromString(_))
+    var recipientsAddresses = getEmailQuery(recipientsIds.toList)
 
     val cid = "1234"
     val email = Email(
       sendMe.subject,   //subject
       sendMe.senderName+" <bloobtest@mail.de>",   //sender
       Seq("Miss TO <bloobtest@mail.de>"),   //receiver
-      //getEmailQuery(recipientsIds),
+      //recipientsAddresses,
       // adds attachment
       attachments = Seq(
         // AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
