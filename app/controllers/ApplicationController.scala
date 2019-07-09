@@ -1,22 +1,23 @@
 package controllers
 
 import javax.inject._
-import models.{EmailAccessRight, EmailARRequest, EmailARDeleteRequest, Email}
+
 import play.api.Logging
 import play.api.mvc._
 import play.api.libs.json.{JsError, JsValue, Json}
-import services.{EmailAccessRightsService, EmailService, MailerService}
+import play.api.Configuration
 
+import java.util.UUID
+
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 import com.mohiva.play.silhouette.api.Silhouette
 import org.vivaconagua.play2OauthClient.silhouette.{CookieEnv, UserService}
 import org.vivaconagua.play2OauthClient.drops.authorization._
 
-
-import scala.concurrent.{ExecutionContext, Future}
-
+import models.{EmailAccessRight, EmailARRequest, EmailARDeleteRequest, Email}
+import services.{EmailAccessRightsService, EmailService, MailerService}
 
 @Singleton
 class ApplicationController @Inject()(
@@ -25,8 +26,13 @@ class ApplicationController @Inject()(
   userService: UserService,
   emailARService: EmailAccessRightsService,
   emailService: EmailService,
-  mailerService: MailerService
+  mailerService: MailerService,
+  config: Configuration,
 ) extends AbstractController(cc) with Logging {
+
+  val path : String = config.get[String]("drops.rest.base") + config.get[String]("drops.rest.user.path")
+  val client_id = config.get[String]("drops.client_id")
+  val client_secret = config.get[String]("drops.client_secret")
 
   def deleteEmailAR = silhouette.SecuredAction( 
     IsEmployee || IsAdmin )
@@ -116,4 +122,19 @@ class ApplicationController @Inject()(
       Ok(Json.toJson(emails))
     }
   }
-}
+  def testDropsRest() = Action.async { implicit request =>
+    
+    //var aUuid = UUID.fromString("c3702bf6-9e98-4b7b-957e-261ea12c552c")
+    //var aUuid = UUID.fromString("58fd2d56-fa65-4a11-a3a8-7991cadc1809")
+    //var aUuid = UUID.fromString("c6621c0c-7e6b-4706-a790-8e8a49b7a603")
+    
+    var listUuid = List(UUID.fromString("c3702bf6-9e98-4b7b-957e-261ea12c552c"),UUID.fromString("58fd2d56-fa65-4a11-a3a8-7991cadc1809"))
+    var result = mailerService.getEmailAddress(listUuid)
+    println(result)
+    var itsmapped = result.map( option => option.get )
+    println(itsmapped)
+    Future(Ok(itsmapped.toString))
+  }
+
+
+} //end ApplicationController
